@@ -1,0 +1,37 @@
+import pandas as pd
+import numpy as np
+
+#importing the dataset
+data=pd.read_csv("train.csv")
+data.head()
+
+#selecting training and predicting columns
+columns_target=['Survived']
+columns_train=['Age','Sex','Pclass','Fare']
+X=data[columns_train]
+Y=data[columns_target]
+
+#checking for missing data
+X['Sex'].isnull().sum()
+X['Pclass'].isnull().sum()
+X['Fare'].isnull().sum()
+X['Age'].isnull().sum()
+X['Age']=X['Age'].fillna(X['Age'].median())
+X['Age'].isnull().sum()
+
+#converting strings to o and 1
+d={'male':0,'female':1}
+X['Sex']=X['Sex'].apply(lambda x:d[x])
+X['Sex'].head
+
+#implement machine learning through scikit-learn library
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test= train_test_split(X,Y,test_size=0.3,random_state=1)
+from sklearn import svm
+clf=svm.LinearSVC()
+clf.fit(X_train,Y_train)
+
+#now print the result and accuracy
+print(clf.predict(X_test[0:1]))
+print(clf.predict(X_test[0:10]))
+print(clf.score(X_test,Y_test))
